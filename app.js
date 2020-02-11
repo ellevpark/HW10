@@ -1,12 +1,19 @@
 const inquirer= require ("inquirer");
-
+const fs = require ("fs");
+const util = require ("util")
+const jest = require ("jest");
 const Manager = require("./lib/Manager.js");
 const Engineer = require("./lib/Engineer.js");
 const Intern = require("./lib/Intern.js");
+const employees = []; 
+let internHTML = "";
+let managerHTML = "";
+let engineerHTML = ""; 
+let teamMembers = ""; 
 
-let employeeArr = [];
+getEmployeeInfo();
 
-const getEmployeeInfo = function(){
+function getEmployeeInfo (){
   inquirer.prompt ([
     { 
       type: "input",
@@ -35,7 +42,7 @@ const getEmployeeInfo = function(){
   ])
   .then(function(res){
     if (res.role === "Manager"){
-      const newManager = new Manager(res.name, res.id, res.email); 
+      const manager = new Manager(res.name, res.id, res.email); 
 
       inquirer.prompt([
         {
@@ -46,14 +53,14 @@ const getEmployeeInfo = function(){
         },
       ]) 
       .then(function(res){
-        newManager.officeNumber = res.officeNumber; 
-        employeeArr.push(newManager)
+        manager.officeNumber = res.officeNumber; 
+        employees.push(manager)
         addEmployee();
       })
     }
 
     else if (res.role === "Engineer"){
-    const newEngineer = new Engineer(res.name, res.id, res.email); 
+    const engineer = new Engineer(res.name, res.id, res.email); 
     inquirer.prompt([
       {
         type: "input",
@@ -62,11 +69,14 @@ const getEmployeeInfo = function(){
       }
     ])
       .then(function(res){
-        newEngineer.gitHub = res.gitHub; 
+        engineer.gitHub = res.gitHub; 
+        employees.push(engineer)
+        addEmployee();
+
       });
     }
     else if (res.role === "Intern"){
-      const newIntern = new Intern(res.name, res.id, res.email);
+      const intern = new Intern(res.name, res.id, res.email);
       inquirer.prompt([
         {
           type: "input",
@@ -75,13 +85,16 @@ const getEmployeeInfo = function(){
         }
       ])
       .then(function(res){
-        newIntern.school= res.school;
+        intern.school= res.school;
+        employees.push(intern);
+        addEmployee();
+
       })
     }
   });
 }
-
 function addEmployee(){
+  //TODO: add empty array to hold employees 
   inquirer.prompt({
     type: "confirm",
     message: "Add new employee?",
@@ -89,31 +102,75 @@ function addEmployee(){
   }).then(function(res){
     if(res.response){
       getEmployeeInfo()
+
     } else {
-      console.log(employeeArr)
-      //make html file
-      //makeHTMLstuff()
+      console.log(employees)
+      printTeam();
+      
     }
   })
 }
+// console.log(employees)
 
-function makeHTMLstuff(){
-  employeeArr.forEach(employee => {
-    switch (employee.getRole()) {
-      case "Engineer":
-        
-        break;
-      case "Intern":
-        
-        break;
-      case "Manager":
-        
-        break;
-    
-      default:
-        break;
-    }
-  });
+function printTeam(){
+  employees.forEach(teamMember => {
+    if (teamMember.getRole() === "Manager") {
+      const { name, id, email, officeNumber } = teamMember;
+      function updateManager() {
+      let data = fs.readFileSync("./templates/manager.html", "utf8");
+
+        managerHTML = data
+          .replace(`{{ name }}`, `${name}`)
+          .replace(`{{ role }}`, `Manager`)
+          .replace(`{{ id }}`, `${id}`)
+          .replace(`{{ email }}`, `${email}`)
+          .replace(`{{ officeNumber }}`, `${officeNumber}`);
+
+        teamMembers += managerHTML;
+  };
+  updateManager(); 
+} else if (teamMember.getRole() === "Engineer") {
+  const { name, id, email, gitHub } = teamMember;
+  function updateEngineer() {
+    let data = fs.readFileSync("./templates/engineer.html", "utf8");
+    engineerHTML = data
+      .replace(`{{ name }}`, `${name}`)
+      .replace(`{{ role }}`, `Engineer`)
+      .replace(`{{ id }}`, `${id}`)
+      .replace(`{{ email }}`, `${email}`)
+      .replace(`{{ username }}`, `${gitHub}`);
+    teamMembers += engineerHTML;
+  }
+  updateEngineer();
+} else if (teamMember.getRole() === "Intern") {
+  const { name, id, email, school } = teamMember;
+  function updateIntern() {
+    let data = fs.readFileSync("./templates/intern.html", "utf8");
+    internHTML = data
+      .replace(`{{ name }}`, `${name}`)
+      .replace(`{{ role }}`, `Intern`)
+      .replace(`{{ id }}`, `${id}`)
+      .replace(`{{ email }}`, `${email}`)
+      .replace(`{{ school }}`, `${school}`);
+
+  teamMembers += internHTML;
+ 
+  }
+  updateIntern();
 }
+  createHTML();
 
-getEmployeeInfo();
+  function createHTML(){
+    fs.readFile("./templates/main.html", "utf8", (err, data)=> {
+      if (err) throw error; 
+
+      const newTeamHTML = data.replace(`{{ content }}`, teamMembers)
+      fs.writeFile("./output/main.html", newTeamHTML, "utf8", err => {
+        if (err) throw error;
+        console.log("created HTML!");
+    })
+  })
+  }
+}
+);
+}
