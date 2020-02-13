@@ -3,26 +3,22 @@ body {
 }
 
 .container-fluid-nav{
-   background-color: lightblue;
+   background-color: blanchedalmond;
    color: #FFFFFF;
-   font-weight: bold;
-   margin: 0;
-   padding: 10px;
+   padding: 20px;
+   font-size: larger;
 
 }
 
 .employee-container {
-   -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.15);
-   -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.15);
-   box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.15);
-   border-radius: 15px;
+   border-radius: 10px;
    margin-top: 20px;
-   margin-bottom: 20px;
 }
 
 .employee-header {
-   background-color: #A24936;
-   border-radius: 15px 15px 0 0;
+   background-color: rgb(7, 7, 53);
+   width: 20em;
+   border-radius: 10px 10px 0 0;
    padding: 10px;
    color: #FFFFFF;
 }

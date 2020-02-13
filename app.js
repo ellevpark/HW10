@@ -165,7 +165,7 @@ function printTeam(){
       if (err) throw error; 
 
       const newTeamHTML = data.replace(`{{ content }}`, teamMembers)
-      fs.writeFile("./output/main.html", newTeamHTML, "utf8", err => {
+      fs.writeFile("./templates/result.html", newTeamHTML, "utf8", err => {
         if (err) throw error;
         console.log("created HTML!");
     })
