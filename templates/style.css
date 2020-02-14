@@ -1,6 +1,10 @@
 body {
   background-color: #f6f5f5; 
 }
+.container{
+   display: flex;
+
+}
 
 .container-fluid-nav{
    background-color: blanchedalmond;
@@ -14,6 +18,7 @@ body {
    border-radius: 10px;
    margin-top: 20px;
    padding: 10px;
+   width: 20em;
 }
 
 .employee-header {
@@ -29,13 +34,7 @@ body {
    border-radius: 0 0 15px 15px;
    background-color: rgb(241, 245, 245);
    width: 20em;
+   flex-direction:column;
 }
 
-.employee-content p{
-   margin: 7px 0 7px;
-   padding: 0 0 7px;
-}
 
-.employee-content p:last-child{
-   border-bottom: none;
-}
